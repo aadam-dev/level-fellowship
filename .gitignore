@@ -60,3 +60,4 @@ CLAUDE.md
 .idea/
 .vscode/
 *.swp
+.env*.local
