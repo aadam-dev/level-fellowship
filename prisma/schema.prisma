@@ -1,0 +1,246 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AccountRole {
+  candidate
+  ambassador
+  enterprise
+  sys_admin
+}
+
+enum SocietyType {
+  IF_society
+  isoc_node
+}
+
+enum EnrollmentType {
+  university_student
+  non_student_aspirant
+}
+
+enum RegistryStatus {
+  incubating
+  verified_talent
+  placed
+}
+
+enum ScrutinyStatus {
+  pending
+  interviewed
+  approved
+  rejected
+}
+
+enum FrameworkType {
+  uni_licensing
+  corp_sponsorship
+  certification
+  talent_placement
+}
+
+enum ShariahProtocol {
+  wakalah_bil_ujrah
+  fixed_service_fee
+}
+
+enum PaymentStatus {
+  pending
+  cleared
+  disputed
+}
+
+enum SubscriptionStatus {
+  active
+  suspended
+  cancelled
+}
+
+model User {
+  id           String      @id @default(uuid()) @db.Uuid
+  email        String      @unique @db.VarChar(255)
+  passwordHash String      @map("password_hash") @db.VarChar(255)
+  accountRole  AccountRole @map("account_role")
+  createdAt    DateTime    @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  candidate         Candidate?
+  enterprisePartner EnterprisePartner?
+  vettingRequests   AmbassadorVetting[] @relation("VettingUser")
+  assignedVettings  AmbassadorVetting[] @relation("VettingAdmin")
+  revenueAsPayer    RevenueLedger[]
+
+  @@map("users")
+}
+
+model Chapter {
+  id             Int         @id @default(autoincrement())
+  universityName String      @map("university_name") @db.VarChar(150)
+  societyType    SocietyType @map("society_type")
+  isActive       Boolean     @default(true) @map("is_active")
+  regionNode     String      @default("UK-MIDLANDS") @map("region_node") @db.VarChar(50)
+
+  candidates Candidate[]
+  events     ChapterEvent[]
+  vettings   AmbassadorVetting[]
+
+  @@map("chapters")
+}
+
+model Candidate {
+  id              String         @id @default(uuid()) @db.Uuid
+  userId          String         @unique @map("user_id") @db.Uuid
+  chapterId       Int            @map("chapter_id")
+  currentSemester Int            @default(1) @map("current_semester")
+  academicMajor   String?        @map("academic_major") @db.VarChar(100)
+  enrollmentType  EnrollmentType @map("enrollment_type")
+  registryStatus  RegistryStatus @default(incubating) @map("registry_status")
+
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chapter           Chapter            @relation(fields: [chapterId], references: [id])
+  moduleCompletions ModuleCompletion[]
+  placements        PlacementRecord[]
+  eventRegistrations EventRegistration[]
+
+  @@index([chapterId, registryStatus])
+  @@map("candidates")
+}
+
+model EnterprisePartner {
+  id                 String             @id @default(uuid()) @db.Uuid
+  userId             String             @unique @map("user_id") @db.Uuid
+  organizationName   String             @map("organization_name") @db.VarChar(200)
+  subscriptionStatus SubscriptionStatus @default(active) @map("subscription_status")
+
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  placements  PlacementRecord[]
+
+  @@map("enterprise_partners")
+}
+
+model AmbassadorVetting {
+  id                      Int            @id @default(autoincrement())
+  userId                  String         @map("user_id") @db.Uuid
+  chapterId               Int            @map("chapter_id")
+  scrutinyStatus          ScrutinyStatus @default(pending) @map("scrutiny_status")
+  assignedById            String?        @map("assigned_by") @db.Uuid
+  academicCredentialsUrl  String?        @map("academic_credentials_url")
+  statementOfCommitmentHash String?      @map("statement_of_commitment_hash") @db.VarChar(64)
+  createdAt               DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  user       User     @relation("VettingUser", fields: [userId], references: [id], onDelete: Cascade)
+  chapter    Chapter  @relation(fields: [chapterId], references: [id])
+  assignedBy User?    @relation("VettingAdmin", fields: [assignedById], references: [id])
+
+  @@index([userId, scrutinyStatus])
+  @@map("ambassador_vetting")
+}
+
+model CurriculumModule {
+  id            Int    @id @default(autoincrement())
+  moduleCode    String @unique @map("module_code") @db.VarChar(50)
+  semesterIndex Int    @map("semester_index")
+  title         String @db.VarChar(200)
+  contentUrl    String? @map("content_url")
+  workbookUrl   String? @map("workbook_url")
+
+  @@map("curriculum_modules")
+}
+
+model ModuleCompletion {
+  id               Int      @id @default(autoincrement())
+  candidateId      String   @map("candidate_id") @db.Uuid
+  semesterIndex    Int      @map("semester_index")
+  moduleCode       String   @map("module_code") @db.VarChar(50)
+  workbookSubmitted Boolean @default(false) @map("workbook_submitted")
+  examScore        Int?     @map("exam_score")
+  isVerified       Boolean  @default(false) @map("is_verified")
+
+  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@unique([candidateId, moduleCode])
+  @@index([candidateId, semesterIndex])
+  @@map("module_completions")
+}
+
+model RevenueLedger {
+  id              String          @id @default(uuid()) @db.Uuid
+  payerId         String          @map("payer_id") @db.Uuid
+  frameworkType   FrameworkType   @map("framework_type")
+  shariahProtocol ShariahProtocol @default(wakalah_bil_ujrah) @map("shariah_protocol")
+  amountUsd       Decimal         @map("amount_usd") @db.Decimal(12, 2)
+  paymentStatus   PaymentStatus   @default(pending) @map("payment_status")
+  stripeInvoiceId String?         @map("stripe_invoice_id") @db.VarChar(100)
+  createdAt       DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  payer User @relation(fields: [payerId], references: [id])
+
+  @@index([paymentStatus, frameworkType])
+  @@map("revenue_ledger")
+}
+
+model ChapterEvent {
+  id           Int      @id @default(autoincrement())
+  chapterId    Int      @map("chapter_id")
+  title        String   @db.VarChar(200)
+  description  String?  @db.Text
+  startsAt     DateTime @map("starts_at") @db.Timestamptz(6)
+  capacity     Int      @default(100)
+  isOpenAccess Boolean  @default(true) @map("is_open_access")
+
+  chapter       Chapter             @relation(fields: [chapterId], references: [id])
+  registrations EventRegistration[]
+  attendances   AttendanceRecord[]
+
+  @@map("chapter_events")
+}
+
+model EventRegistration {
+  id               Int            @id @default(autoincrement())
+  eventId          Int            @map("event_id")
+  email            String         @db.VarChar(255)
+  enrollmentClass  EnrollmentType @map("enrollment_class")
+  qrToken          String         @unique @map("qr_token") @db.VarChar(100)
+  candidateId      String?        @map("candidate_id") @db.Uuid
+  createdAt        DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  event      ChapterEvent       @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  candidate  Candidate?         @relation(fields: [candidateId], references: [id])
+  attendance AttendanceRecord?
+
+  @@index([eventId, email])
+  @@map("event_registrations")
+}
+
+model AttendanceRecord {
+  id             String   @id @default(uuid()) @db.Uuid
+  registrationId Int      @unique @map("registration_id")
+  eventId        Int      @map("event_id")
+  statusLogged   String   @default("confirmed_present") @map("status_logged") @db.VarChar(50)
+  checkedInAt    DateTime @default(now()) @map("checked_in_at") @db.Timestamptz(6)
+  checkedInById  String?  @map("checked_in_by") @db.Uuid
+
+  registration EventRegistration @relation(fields: [registrationId], references: [id], onDelete: Cascade)
+  event        ChapterEvent      @relation(fields: [eventId], references: [id])
+
+  @@map("attendance_records")
+}
+
+model PlacementRecord {
+  id                    String   @id @default(uuid()) @db.Uuid
+  enterprisePartnerId   String   @map("enterprise_partner_id") @db.Uuid
+  candidateId           String   @map("candidate_id") @db.Uuid
+  annualizedBaseSalaryUsd Decimal @map("annualized_base_salary_usd") @db.Decimal(12, 2)
+  placementFeeUsd       Decimal  @map("placement_fee_usd") @db.Decimal(12, 2)
+  ledgerId              String?  @unique @map("ledger_id") @db.Uuid
+  createdAt             DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  enterprisePartner EnterprisePartner @relation(fields: [enterprisePartnerId], references: [id])
+  candidate         Candidate         @relation(fields: [candidateId], references: [id])
+
+  @@map("placement_records")
+}

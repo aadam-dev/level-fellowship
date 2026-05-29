@@ -1,26 +1,44 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-slate-deep: #0b0f19;
+  --frost-blue: #3b82f6;
+  --ice-white: #f8fafc;
+  --cyan-border: #0ea5e9;
+  --emerald: #10b981;
+  --card-bg: rgba(15, 23, 42, 0.65);
+  --card-border: rgba(255, 255, 255, 0.05);
+  --card-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: var(--bg-slate-deep);
+  --color-foreground: var(--ice-white);
+  --color-accent: var(--frost-blue);
+  --color-accent-cyan: var(--cyan-border);
+  --color-success: var(--emerald);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+body {
+  background: var(--bg-slate-deep);
+  color: var(--ice-white);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  min-height: 100vh;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.bento-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow);
+  border-radius: 1rem;
+}
+
+h1,
+h2,
+h3 {
+  letter-spacing: -0.025em;
 }
