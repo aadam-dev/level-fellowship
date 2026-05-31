@@ -15,14 +15,12 @@ import { verifyPassword } from "@/lib/password";
 describe("demo accounts (unit)", () => {
   beforeEach(() => vi.clearAllMocks());
 
-  it("exports four demo account definitions", () => {
-    expect(DEMO_ACCOUNTS).toHaveLength(4);
-    expect(DEMO_ACCOUNTS.map((d) => d.role)).toEqual([
-      "sys_admin",
-      "candidate",
-      "ambassador",
-      "enterprise",
-    ]);
+  it("exports team and role demo account definitions", () => {
+    expect(DEMO_ACCOUNTS).toHaveLength(5);
+    expect(DEMO_ACCOUNTS.filter((d) => d.role === "sys_admin")).toHaveLength(3);
+    expect(DEMO_ACCOUNTS.map((d) => d.role)).toContain("candidate");
+    expect(DEMO_ACCOUNTS.map((d) => d.role)).toContain("ambassador");
+    expect(DEMO_ACCOUNTS.map((d) => d.role)).not.toContain("enterprise");
   });
 
   it("verifies successful login", async () => {

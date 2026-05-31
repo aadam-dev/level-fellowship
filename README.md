@@ -47,10 +47,12 @@ After `npm run db:seed`, these accounts exist **only in your local database**. D
 
 | Email | Password | Role |
 |-------|----------|------|
+| `hisham.ahmed@classroom.local` | `password123` | sys_admin (Program Director) |
+| `adam@classroom.local` | `password123` | sys_admin (Structural Architect) |
+| `fatima@classroom.local` | `password123` | sys_admin (Researcher) |
 | `candidate@classroom.local` | `password123` | candidate |
 | `ambassador@classroom.local` | `password123` | ambassador |
 | `enterprise@classroom.local` | `password123` | enterprise |
-| `admin@classroom.local` | `password123` | sys_admin |
 
 Verify: `npm run verify:demo`
 

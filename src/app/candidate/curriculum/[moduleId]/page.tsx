@@ -40,9 +40,9 @@ export default async function CurriculumModulePage({
   });
 
   return (
-    <div className="max-w-3xl mx-auto px-6 py-12">
-      <h1 className="text-2xl font-semibold tracking-tight mb-2">{mod.title}</h1>
-      <p className="text-slate-400 text-sm mb-8">{mod.moduleCode}</p>
+    <div>
+      <p className="section-label">{mod.moduleCode}</p>
+      <h1 className="headline text-2xl mt-2 mb-8">{mod.title}</h1>
       <ModuleWorkspace
         moduleCode={mod.moduleCode}
         contentUrl={mod.contentUrl}

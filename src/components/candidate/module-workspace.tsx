@@ -1,6 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+
+const inputClass =
+  "w-full bg-white/80 border border-[var(--border-subtle)] rounded-lg px-4 py-2 text-sm text-[var(--navy)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]";
 
 export function ModuleWorkspace({
   moduleCode,
@@ -35,27 +39,23 @@ export function ModuleWorkspace({
   }
 
   return (
-    <div className="bento-card p-6 space-y-6">
+    <div className="glass-panel p-6 space-y-6">
       {contentUrl && (
         <a
           href={contentUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-sm text-[var(--frost-blue)] hover:underline"
+          className="text-sm text-[var(--accent)] hover:underline font-medium"
         >
-          Open module content →
+          Open module content
         </a>
       )}
       {workbookUrl && (
-        <a
-          href={workbookUrl}
-          download
-          className="block text-sm text-[var(--cyan-border)] hover:underline"
-        >
+        <a href={workbookUrl} download className="block text-sm text-[var(--accent)] hover:underline">
           Download workbook PDF
         </a>
       )}
-      <label className="flex items-center gap-2 text-sm">
+      <label className="flex items-center gap-2 text-sm text-[var(--navy)]">
         <input
           type="checkbox"
           checked={workbookSubmitted}
@@ -64,33 +64,34 @@ export function ModuleWorkspace({
         Workbook submitted for verification
       </label>
       <div>
-        <label className="text-sm text-slate-400 block mb-1">Exit exam score (0–100)</label>
+        <label className="text-sm text-[var(--text-muted)] block mb-1">
+          Exit exam score (0 to 100)
+        </label>
         <input
           type="number"
           min={0}
           max={100}
           value={examScore}
           onChange={(e) => setExamScore(e.target.value)}
-          className="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-2 text-sm"
+          className={inputClass}
         />
       </div>
       <div>
-        <label className="text-sm text-slate-400 block mb-1">Assignment notes</label>
+        <label className="text-sm text-[var(--text-muted)] block mb-1">Assignment notes</label>
         <textarea
           value={assignment}
           onChange={(e) => setAssignment(e.target.value)}
           rows={4}
-          className="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-2 text-sm"
+          className={inputClass}
         />
       </div>
-      <button
-        onClick={handleSave}
-        className="px-4 py-2 rounded-lg bg-[var(--frost-blue)] text-white text-sm"
-      >
+      <Button onClick={handleSave} variant="accent">
         Save progress
-      </button>
+      </Button>
       {saved && (
-        <p className="text-sm text-[var(--emerald)]">Progress saved. Verified if score ≥ 70.</p>
+        <p className="text-sm text-[var(--success)]">
+          Progress saved. Verified when score is 70% or higher.
+        </p>
       )}
     </div>
   );

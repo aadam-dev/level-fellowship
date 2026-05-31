@@ -1,6 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+
+const inputClass =
+  "w-full bg-white/80 border border-[var(--border-subtle)] rounded-lg px-4 py-2.5 text-sm text-[var(--navy)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]";
 
 export function ScanForm() {
   const [eventId, setEventId] = useState("");
@@ -30,13 +34,13 @@ export function ScanForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bento-card p-6 space-y-4 max-w-lg">
-      <h2 className="text-lg font-semibold tracking-tight">Attendance check-in</h2>
+    <form onSubmit={handleSubmit} className="glass-panel p-6 space-y-4 max-w-lg">
+      <h2 className="text-lg font-semibold text-[var(--navy)]">Attendance check-in</h2>
       <input
         placeholder="Event ID"
         value={eventId}
         onChange={(e) => setEventId(e.target.value)}
-        className="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-2 text-sm"
+        className={inputClass}
         required
       />
       <input
@@ -44,28 +48,25 @@ export function ScanForm() {
         placeholder="Attendee email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-2 text-sm"
+        className={inputClass}
         required
       />
       <input
         placeholder="QR scan token (e.g. qr_scan_token_0001A)"
         value={token}
         onChange={(e) => setToken(e.target.value)}
-        className="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-2 text-sm"
+        className={inputClass}
         required
       />
-      {error && <p className="text-sm text-red-400">{error}</p>}
+      {error && <p className="text-sm text-red-600">{error}</p>}
       {result && (
-        <pre className="text-xs text-[var(--emerald)] bg-black/30 p-3 rounded overflow-auto">
+        <pre className="text-xs text-[var(--success)] bg-slate-50 border border-[var(--border-subtle)] p-3 rounded-lg overflow-auto">
           {JSON.stringify(result, null, 2)}
         </pre>
       )}
-      <button
-        type="submit"
-        className="w-full py-2 rounded-lg bg-[var(--emerald)] text-white text-sm font-medium"
-      >
+      <Button type="submit" variant="accent" className="w-full">
         Confirm present
-      </button>
+      </Button>
     </form>
   );
 }

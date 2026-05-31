@@ -17,6 +17,24 @@ const MODULES = [
   { moduleCode: "SEM2-CASE-04", semesterIndex: 2, title: "Hybrid Readiness Workshop" },
 ];
 
+const TEAM = [
+  {
+    email: "hisham.ahmed@classroom.local",
+    displayName: "Hisham Ahmed",
+    teamTitle: "Program Director",
+  },
+  {
+    email: "adam@classroom.local",
+    displayName: "Adam",
+    teamTitle: "Structural Architect",
+  },
+  {
+    email: "fatima@classroom.local",
+    displayName: "Fatima",
+    teamTitle: "Researcher",
+  },
+];
+
 async function main() {
   const passwordHash = await hashPassword("password123");
 
@@ -60,19 +78,27 @@ async function main() {
     });
   }
 
-  const admin = await prisma.user.create({
-    data: {
-      email: "admin@classroom.local",
-      passwordHash,
-      accountRole: "sys_admin" as AccountRole,
-    },
-  });
+  const teamUsers = await Promise.all(
+    TEAM.map((member) =>
+      prisma.user.create({
+        data: {
+          email: member.email,
+          passwordHash,
+          accountRole: "sys_admin" as AccountRole,
+          displayName: member.displayName,
+          teamTitle: member.teamTitle,
+        },
+      }),
+    ),
+  );
+  const primaryAdmin = teamUsers[0];
 
   const candidateUser = await prisma.user.create({
     data: {
       email: "candidate@classroom.local",
       passwordHash,
       accountRole: "candidate",
+      displayName: "Demo Candidate",
     },
   });
 
@@ -106,6 +132,7 @@ async function main() {
       email: "ambassador@classroom.local",
       passwordHash,
       accountRole: "ambassador",
+      displayName: "Demo Ambassador",
     },
   });
 
@@ -114,7 +141,7 @@ async function main() {
       userId: ambassadorUser.id,
       chapterId: chapters[0].id,
       scrutinyStatus: "approved" as ScrutinyStatus,
-      assignedById: admin.id,
+      assignedById: primaryAdmin.id,
     },
   });
 
@@ -123,6 +150,7 @@ async function main() {
       email: "enterprise@classroom.local",
       passwordHash,
       accountRole: "enterprise",
+      displayName: "Demo Enterprise",
       enterprisePartner: {
         create: {
           organizationName: "Misaq Finance Network",
@@ -145,18 +173,20 @@ async function main() {
   const event = await prisma.chapterEvent.create({
     data: {
       chapterId: chapters[0].id,
-      title: "Open Workshop: Islamic Finance Careers",
+      title: "Open Workshop: Career Pathways",
       description: "Community-accessible 2-hour session",
       startsAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       isOpenAccess: true,
     },
   });
 
-  console.log("Seed complete:");
-  console.log("  admin@classroom.local / password123");
-  console.log("  candidate@classroom.local / password123");
-  console.log("  ambassador@classroom.local / password123");
-  console.log("  enterprise@classroom.local / password123");
+  console.log("Seed complete (dev password: password123):");
+  for (const m of TEAM) {
+    console.log(`  ${m.email} (${m.teamTitle})`);
+  }
+  console.log("  candidate@classroom.local");
+  console.log("  ambassador@classroom.local");
+  console.log("  enterprise@classroom.local");
   console.log(`  Sample event ID: ${event.id}`);
 }
 

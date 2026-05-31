@@ -1,25 +1,33 @@
 import { cn } from "@/lib/utils";
 
 export function GlassCard({
-  children,
   className,
   title,
   subtitle,
-}: {
-  children: React.ReactNode;
-  className?: string;
+  children,
+  strong = false,
+  interactive = false,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement> & {
   title?: string;
   subtitle?: string;
+  strong?: boolean;
+  interactive?: boolean;
 }) {
   return (
-    <div className={cn("bento-card p-6 flex flex-col gap-3", className)}>
+    <div
+      className={cn(
+        strong ? "glass-panel-strong p-6" : "glass-panel p-6",
+        interactive && "card-interactive",
+        className,
+      )}
+      {...props}
+    >
       {title && (
-        <div>
-          <h3 className="text-lg font-semibold tracking-tight text-[var(--ice-white)]">
-            {title}
-          </h3>
+        <div className="mb-4">
+          <h3 className="text-sm font-semibold text-[var(--navy)]">{title}</h3>
           {subtitle && (
-            <p className="text-sm text-slate-400 mt-1">{subtitle}</p>
+            <p className="text-xs text-[var(--text-muted)] mt-0.5">{subtitle}</p>
           )}
         </div>
       )}

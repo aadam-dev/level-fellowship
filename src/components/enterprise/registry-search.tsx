@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 type CandidateResult = {
   anonymized_candidate_hash: string;
@@ -9,6 +10,9 @@ type CandidateResult = {
   workbook_status: string;
   modules_passed: string[];
 };
+
+const inputClass =
+  "bg-white/80 border border-[var(--border-subtle)] rounded-lg px-3 py-2 text-sm text-[var(--navy)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]";
 
 export function RegistrySearch() {
   const [semesterTrack, setSemesterTrack] = useState("2");
@@ -53,58 +57,51 @@ export function RegistrySearch() {
 
   return (
     <div className="space-y-6">
-      <div className="bento-card p-6 flex flex-wrap gap-4">
+      <div className="glass-panel p-6 flex flex-wrap gap-4 items-end">
         <input
           placeholder="Semester track"
           value={semesterTrack}
           onChange={(e) => setSemesterTrack(e.target.value)}
-          className="bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-sm w-32"
+          className={`${inputClass} w-32`}
         />
         <input
           placeholder="Major (e.g. economics)"
           value={major}
           onChange={(e) => setMajor(e.target.value)}
-          className="bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-sm flex-1 min-w-[160px]"
+          className={`${inputClass} flex-1 min-w-[160px]`}
         />
         <input
           placeholder="Min score"
           value={minScore}
           onChange={(e) => setMinScore(e.target.value)}
-          className="bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-sm w-24"
+          className={`${inputClass} w-24`}
         />
-        <button
-          onClick={search}
-          disabled={loading}
-          className="px-4 py-2 rounded-lg bg-[var(--frost-blue)] text-white text-sm"
-        >
+        <Button onClick={search} disabled={loading} variant="accent">
           {loading ? "Searching…" : "Search"}
-        </button>
+        </Button>
       </div>
-      {placementMsg && (
-        <p className="text-sm text-[var(--emerald)]">{placementMsg}</p>
-      )}
+      {placementMsg && <p className="text-sm text-[var(--success)]">{placementMsg}</p>}
       <div className="grid gap-4">
         {results.map((c) => (
-          <div key={c.anonymized_candidate_hash} className="bento-card p-6">
-            <p className="font-mono text-[var(--cyan-border)]">{c.anonymized_candidate_hash}</p>
-            <p className="text-sm text-slate-400 mt-1">
-              {c.chapter_region_node} · Score {c.composite_curriculum_score}% ·{" "}
-              {c.workbook_status}
+          <div key={c.anonymized_candidate_hash} className="glass-panel p-6">
+            <p className="font-mono text-sm text-[var(--text-muted)]">{c.anonymized_candidate_hash}</p>
+            <p className="text-sm text-[var(--text-secondary)] mt-1">
+              {c.chapter_region_node}. Score {c.composite_curriculum_score}%. {c.workbook_status}
             </p>
-            <p className="text-xs text-slate-500 mt-2">
+            <p className="text-xs text-[var(--text-muted)] mt-2">
               Modules: {c.modules_passed.join(", ")}
             </p>
             <button
               type="button"
               onClick={() => registerPlacement(c.anonymized_candidate_hash)}
-              className="mt-3 text-xs text-[var(--frost-blue)] hover:underline"
+              className="mt-3 text-sm text-[var(--accent)] hover:underline font-medium"
             >
-              Register placement (Wakalah fee) →
+              Register placement fee
             </button>
           </div>
         ))}
         {results.length === 0 && !loading && (
-          <p className="text-slate-500 text-sm">No results. Adjust filters or run seed data.</p>
+          <p className="text-[var(--text-muted)] text-sm">No results. Adjust filters or run seed data.</p>
         )}
       </div>
     </div>

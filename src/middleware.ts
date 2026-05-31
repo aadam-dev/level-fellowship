@@ -8,6 +8,7 @@ const protectedPrefixes = [
   { prefix: "/candidate", roles: ["candidate", "sys_admin"] as AccountRole[] },
   { prefix: "/ambassador", roles: ["ambassador", "sys_admin"] as AccountRole[] },
   { prefix: "/enterprise", roles: ["enterprise", "sys_admin"] as AccountRole[] },
+  { prefix: "/admin", roles: ["sys_admin"] as AccountRole[] },
 ];
 
 export async function middleware(req: NextRequest) {
@@ -37,5 +38,10 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/candidate/:path*", "/ambassador/:path*", "/enterprise/:path*"],
+  matcher: [
+    "/candidate/:path*",
+    "/ambassador/:path*",
+    "/enterprise/:path*",
+    "/admin/:path*",
+  ],
 };

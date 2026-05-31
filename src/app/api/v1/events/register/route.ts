@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { withRateLimit } from "@/lib/api-handler";
+import { isDatabaseConnected } from "@/lib/platform-readiness";
 import { registerForEvent } from "@/server/events/attendance";
 import { EnrollmentType } from "@prisma/client";
 
@@ -12,6 +13,16 @@ const schema = z.object({
 
 export async function POST(req: NextRequest) {
   return withRateLimit(req, async () => {
+    if (!(await isDatabaseConnected())) {
+      return NextResponse.json(
+        {
+          error:
+            "Live registration is unavailable. Use the interest form on this page instead.",
+        },
+        { status: 503 },
+      );
+    }
+
     const body = schema.parse(await req.json());
     const result = await registerForEvent({
       eventId: body.event_id,

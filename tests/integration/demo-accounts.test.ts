@@ -21,7 +21,7 @@ describe.skipIf(!hasDatabase)("demo accounts (integration)", () => {
     }
   });
 
-  it("has all four demo users in the database", async (ctx) => {
+  it("has all demo users in the database", async (ctx) => {
     if (!dbReady) ctx.skip();
     for (const demo of DEMO_ACCOUNTS) {
       const user = await prisma.user.findUnique({

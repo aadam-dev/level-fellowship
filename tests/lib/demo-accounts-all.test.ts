@@ -33,8 +33,8 @@ describe("verifyAllDemoAccounts", () => {
       passwordHash: "x",
     });
     const results = await verifyAllDemoAccounts("password123");
-    const adminResult = results.find((r) => r.email === "admin@classroom.local");
-    expect(adminResult?.ok).toBe(false);
-    expect(adminResult?.error).toContain("Expected role");
+    const teamResult = results.find((r) => r.email === "hisham.ahmed@classroom.local");
+    expect(teamResult?.ok).toBe(false);
+    expect(teamResult?.error).toContain("Expected role");
   });
 });

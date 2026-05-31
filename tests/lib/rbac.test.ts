@@ -6,7 +6,7 @@ describe("roleDashboardPath", () => {
     expect(roleDashboardPath("candidate")).toBe("/candidate/dashboard");
     expect(roleDashboardPath("ambassador")).toBe("/ambassador/dashboard");
     expect(roleDashboardPath("enterprise")).toBe("/enterprise/dashboard");
-    expect(roleDashboardPath("sys_admin")).toBe("/ambassador/dashboard");
+    expect(roleDashboardPath("sys_admin")).toBe("/admin/dashboard");
   });
 
 });

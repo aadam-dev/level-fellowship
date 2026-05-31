@@ -2,13 +2,16 @@ import { RegistrySearch } from "@/components/enterprise/registry-search";
 
 export default function EnterpriseRegistryPage() {
   return (
-    <div className="max-w-7xl mx-auto px-6 py-12">
-      <h1 className="text-3xl font-semibold tracking-tight mb-2">Anonymized Talent Registry</h1>
-      <p className="text-slate-400 text-sm mb-8 max-w-2xl">
-        Merit-driven screening — no names, photos, or gender in index results. Sort by
-        performance metrics only.
+    <div>
+      <p className="section-label">Registry</p>
+      <h1 className="headline text-3xl mt-2">Anonymized talent index</h1>
+      <p className="text-[var(--text-muted)] text-sm mt-2 max-w-xl">
+        Merit-driven screening with no names, photos, or gender in results. Sort by performance
+        metrics only.
       </p>
-      <RegistrySearch />
+      <div className="mt-8">
+        <RegistrySearch />
+      </div>
     </div>
   );
 }

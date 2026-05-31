@@ -9,7 +9,7 @@ export function roleDashboardPath(role: AccountRole): string {
     case "enterprise":
       return "/enterprise/dashboard";
     case "sys_admin":
-      return "/ambassador/dashboard";
+      return "/admin/dashboard";
     default:
       return "/";
   }

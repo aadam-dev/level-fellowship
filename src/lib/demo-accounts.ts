@@ -1,36 +1,12 @@
 import { AccountRole } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { verifyPassword } from "@/lib/password";
-import { roleDashboardPath } from "@/lib/role-paths";
+import {
+  DEMO_ACCOUNTS,
+  DEMO_PASSWORD,
+} from "@/content/demo-accounts-public";
 
-export const DEMO_PASSWORD = "password123";
-
-export const DEMO_ACCOUNTS: {
-  email: string;
-  role: AccountRole;
-  dashboardPath: string;
-}[] = [
-  {
-    email: "admin@classroom.local",
-    role: "sys_admin",
-    dashboardPath: roleDashboardPath("sys_admin"),
-  },
-  {
-    email: "candidate@classroom.local",
-    role: "candidate",
-    dashboardPath: roleDashboardPath("candidate"),
-  },
-  {
-    email: "ambassador@classroom.local",
-    role: "ambassador",
-    dashboardPath: roleDashboardPath("ambassador"),
-  },
-  {
-    email: "enterprise@classroom.local",
-    role: "enterprise",
-    dashboardPath: roleDashboardPath("enterprise"),
-  },
-];
+export { DEMO_ACCOUNTS, DEMO_PASSWORD };
 
 export type DemoLoginResult = {
   email: string;

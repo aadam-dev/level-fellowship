@@ -4,8 +4,8 @@ import Link from "next/link";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { BentoGrid } from "@/components/layout/bento-grid";
 import { GlassCard } from "@/components/layout/glass-card";
+import { Badge } from "@/components/ui/badge";
 
 export default async function EnterpriseDashboardPage() {
   const session = await auth();
@@ -28,32 +28,37 @@ export default async function EnterpriseDashboardPage() {
     : 0;
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-12">
-      <h1 className="text-3xl font-semibold tracking-tight mb-8">Enterprise Dashboard</h1>
-      <BentoGrid>
-        <GlassCard className="sm:col-span-2" title="Organization">
-          <p className="text-lg">{partner?.organizationName ?? "—"}</p>
-          <p className="text-sm text-slate-400">
-            Subscription: {partner?.subscriptionStatus ?? "inactive"}
-          </p>
+    <div>
+      <p className="section-label">Enterprise</p>
+      <h1 className="headline text-3xl mt-2">Partner overview</h1>
+
+      <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <GlassCard title="Organization" className="sm:col-span-2">
+          <p className="text-lg font-medium">{partner?.organizationName ?? "Not set"}</p>
+          <Badge variant="outline" className="mt-2">
+            {partner?.subscriptionStatus ?? "inactive"}
+          </Badge>
         </GlassCard>
         <GlassCard title="Placements">
-          <p className="text-3xl font-semibold text-[var(--frost-blue)]">{placements}</p>
+          <p className="text-3xl font-semibold tabular-nums">{placements}</p>
         </GlassCard>
         <GlassCard title="Pending invoices">
-          <p className="text-3xl font-semibold text-amber-400">{pendingLedger}</p>
+          <p className="text-3xl font-semibold tabular-nums">{pendingLedger}</p>
         </GlassCard>
-        <GlassCard title="Talent Registry">
-          <Link href="/enterprise/registry" className="text-sm text-[var(--frost-blue)] hover:underline">
-            Search anonymized candidates →
+      </div>
+
+      <div className="mt-8 grid sm:grid-cols-2 gap-4">
+        <GlassCard title="Talent registry">
+          <Link href="/enterprise/registry" className="text-sm text-[var(--accent)] hover:underline">
+            Search anonymized candidates
           </Link>
         </GlassCard>
-        <GlassCard title="Wakalah Billing">
-          <Link href="/enterprise/billing" className="text-sm text-[var(--cyan-border)] hover:underline">
-            View ledger & invoices →
+        <GlassCard title="Billing">
+          <Link href="/enterprise/billing" className="text-sm text-[var(--accent)] hover:underline">
+            View ledger and invoices
           </Link>
         </GlassCard>
-      </BentoGrid>
+      </div>
     </div>
   );
 }

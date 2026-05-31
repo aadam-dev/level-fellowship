@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { GlassCard } from "@/components/layout/glass-card";
+import { Badge } from "@/components/ui/badge";
 
 export default async function EnterpriseBillingPage() {
   const session = await auth();
@@ -15,35 +16,33 @@ export default async function EnterpriseBillingPage() {
   });
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-12">
-      <h1 className="text-3xl font-semibold tracking-tight mb-2">Wakalah bil-Ujrah Billing</h1>
-      <p className="text-slate-400 text-sm mb-8">
-        Fixed service fees only — no interest, compounding, or late penalties at the system layer.
+    <div>
+      <p className="section-label">Billing</p>
+      <h1 className="headline text-3xl mt-2">Wakalah ledger</h1>
+      <p className="text-[var(--text-muted)] text-sm mt-2">
+        Fixed service fees with transparent protocol labels on every entry.
       </p>
-      <div className="space-y-4">
+
+      <div className="mt-8 space-y-3">
         {ledger.length === 0 ? (
           <GlassCard>
-            <p className="text-slate-400 text-sm">No ledger entries yet.</p>
+            <p className="text-sm text-[var(--text-muted)]">No ledger entries yet.</p>
           </GlassCard>
         ) : (
           ledger.map((entry) => (
             <GlassCard key={entry.id} title={entry.frameworkType.replace("_", " ")}>
-              <div className="grid sm:grid-cols-3 gap-2 text-sm">
-                <span>Amount: ${entry.amountUsd.toString()} USD</span>
-                <span>Protocol: {entry.shariahProtocol}</span>
-                <span
-                  className={
-                    entry.paymentStatus === "cleared"
-                      ? "text-[var(--emerald)]"
-                      : "text-amber-400"
-                  }
-                >
-                  {entry.paymentStatus}
+              <div className="flex flex-wrap gap-4 text-sm">
+                <span className="tabular-nums">${entry.amountUsd.toString()} USD</span>
+                <span className="font-mono text-xs text-[var(--text-muted)]">
+                  {entry.shariahProtocol}
                 </span>
+                <Badge variant={entry.paymentStatus === "cleared" ? "success" : "outline"}>
+                  {entry.paymentStatus}
+                </Badge>
               </div>
               {entry.stripeInvoiceId && (
-                <p className="text-xs text-slate-500 mt-2 font-mono">
-                  Stripe: {entry.stripeInvoiceId}
+                <p className="text-xs text-[var(--text-muted)] mt-2 font-mono">
+                  {entry.stripeInvoiceId}
                 </p>
               )}
             </GlassCard>

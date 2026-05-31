@@ -5,8 +5,8 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { isAmbassadorApproved } from "@/server/governance/ambassador-vetting";
-import { BentoGrid } from "@/components/layout/bento-grid";
 import { GlassCard } from "@/components/layout/glass-card";
+import { Badge } from "@/components/ui/badge";
 
 export default async function AmbassadorDashboardPage() {
   const session = await auth();
@@ -30,36 +30,39 @@ export default async function AmbassadorDashboardPage() {
     : 0;
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-12">
-      <h1 className="text-3xl font-semibold tracking-tight mb-8">Ambassador Dashboard</h1>
-      <BentoGrid>
-        <GlassCard title="Chapter Node">
-          <p className="text-lg">{vetting?.chapter.universityName ?? "Unassigned"}</p>
-          <p className="text-sm text-slate-400 mt-1">
-            Status: {vetting?.scrutinyStatus ?? "not applied"}
-          </p>
+    <div>
+      <p className="section-label">Ambassador</p>
+      <h1 className="headline text-3xl mt-2">Chapter operations</h1>
+
+      <div className="mt-8 grid sm:grid-cols-3 gap-4">
+        <GlassCard title="Chapter node">
+          <p className="text-lg font-medium">{vetting?.chapter.universityName ?? "Unassigned"}</p>
+          <Badge variant="outline" className="mt-2">
+            {vetting?.scrutinyStatus ?? "not applied"}
+          </Badge>
         </GlassCard>
-        <GlassCard title="Active Candidates">
-          <p className="text-3xl font-semibold text-[var(--frost-blue)]">{candidateCount}</p>
+        <GlassCard title="Active candidates">
+          <p className="text-3xl font-semibold tabular-nums">{candidateCount}</p>
         </GlassCard>
-        <GlassCard title="Event Attendance">
-          <p className="text-3xl font-semibold text-[var(--emerald)]">{attendanceCount}</p>
+        <GlassCard title="Event attendance">
+          <p className="text-3xl font-semibold tabular-nums">{attendanceCount}</p>
         </GlassCard>
-        {approved && (
-          <>
-            <GlassCard title="Toolkit">
-              <Link href="/ambassador/toolkit" className="text-sm text-[var(--frost-blue)] hover:underline">
-                Download slides & lesson plans →
-              </Link>
-            </GlassCard>
-            <GlassCard title="QR Scanner">
-              <Link href="/ambassador/scan" className="text-sm text-[var(--cyan-border)] hover:underline">
-                Open check-in scanner →
-              </Link>
-            </GlassCard>
-          </>
-        )}
-      </BentoGrid>
+      </div>
+
+      {approved && (
+        <div className="mt-8 grid sm:grid-cols-2 gap-4">
+          <GlassCard title="Toolkit">
+            <Link href="/ambassador/toolkit" className="text-sm text-[var(--accent)] hover:underline">
+              Download slides and lesson plans
+            </Link>
+          </GlassCard>
+          <GlassCard title="QR scanner">
+            <Link href="/ambassador/scan" className="text-sm text-[var(--accent)] hover:underline">
+              Open check-in scanner
+            </Link>
+          </GlassCard>
+        </div>
+      )}
     </div>
   );
 }
