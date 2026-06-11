@@ -38,7 +38,7 @@ export function SiteHeader() {
   return (
     <header className={cn("sticky top-0 z-50 glass-nav", scrolled && "glass-nav-scrolled")}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-[4.25rem] flex items-center justify-between gap-4">
-        <BrandLogo height={38} priority />
+        <BrandLogo height={44} priority />
 
         <nav className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => {

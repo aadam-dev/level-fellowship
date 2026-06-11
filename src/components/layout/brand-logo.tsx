@@ -20,11 +20,11 @@ export function BrandLogo({
   const image = (
     <Image
       src={BRAND_LOGO_PATH}
-      alt="The Level Fellowship"
-      width={150}
-      height={150}
+      alt="Level Fellowship"
+      width={1024}
+      height={1024}
       priority={priority}
-      className={cn("w-auto object-contain rounded-md", className)}
+      className={cn("w-auto object-contain rounded-lg", className)}
       style={{ height: `${height}px` }}
     />
   );
